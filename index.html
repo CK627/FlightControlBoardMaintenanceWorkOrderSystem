@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>2025年世界职业院校技能大赛新一代信息技术争夺赛</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+
+    <div class="user-info-bar">
+      <div class="user-info">
+        <span class="welcome-text">欢迎，<span id="userDisplayName">用户</span></span>
+        <span class="user-role" id="userRole">角色</span>
+        <span class="refresh-countdown" id="refreshCountdown">下次刷新: 3秒</span>
+      </div>
+      <div class="admin-controls" id="adminControls" style="display: none;">
+        <button class="admin-btn export-btn" id="exportDataBtn">导出数据</button>
+        <button class="admin-btn import-btn" id="importDataBtn">导入数据</button>
+        <button class="admin-btn clear-btn" id="clearDataBtn">清除数据</button>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+      </div>
+      <button class="logout-btn" id="logoutBtn">退出登录</button>
+    </div>
+    
+    <div class="main-header">
+      <img src="images/logo.jpg" alt="Logo" class="main-logo">
+      <h1>2025年世界职业院校技能大赛<br>新一代信息技术争夺赛</h1>
+    </div>
+
+
+    <div class="role-selector" id="roleSelector" style="display: none;">
+      <label for="roleSelect">选择角色: </label>
+      <select id="roleSelect">
+        <option value="engineer1">1号工程师</option>
+        <option value="engineer2">2号工程师</option>
+        <option value="engineer3">3号工程师</option>
+        <option value="data_recovery_engineer">数据恢复工程师</option>
+        <option value="referee">裁判</option>
+        <option value="admin">管理员</option>
+      </select>
+    </div>
+
+
+
+    <!-- 自创研发历程进度条 -->
+    <div class="progress-container" id="mirrorProgressContainer">
+      <div class="progress-header">
+        <h4>自创研发历程</h4>
+      </div>
+      <div class="progress-nodes" id="mirrorProgressNodes">
+        <div class="progress-node" data-node="background">
+          <div class="node-circle"></div>
+          <div class="node-label">项目背景</div>
+        </div>
+        <div class="progress-node" data-node="market">
+          <div class="node-circle"></div>
+          <div class="node-label">市场发展</div>
+        </div>
+        <div class="progress-node" data-node="industry">
+          <div class="node-circle"></div>
+          <div class="node-label">行业现状</div>
+        </div>
+        <div class="progress-node" data-node="development">
+          <div class="node-circle"></div>
+          <div class="node-label">研发历程</div>
+        </div>
+        <div class="progress-node" data-node="proposal">
+          <div class="node-circle"></div>
+          <div class="node-label">方案提出</div>
+        </div>
+        <div class="progress-node" data-node="technology">
+          <div class="node-circle"></div>
+          <div class="node-label">核心技术</div>
+        </div>
+        <div class="progress-node" data-node="innovation">
+          <div class="node-circle"></div>
+          <div class="node-label">创新点</div>
+        </div>
+        <div class="progress-node" data-node="education">
+          <div class="node-circle"></div>
+          <div class="node-label">教育维度</div>
+        </div>
+        <div class="progress-node" data-node="social">
+          <div class="node-circle"></div>
+          <div class="node-label">社会价值</div>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="mirrorProgressFill"></div>
+        <div class="progress-text" id="mirrorProgressText">0%</div>
+      </div>
+    </div>
+
+    <!-- 数据恢复维修工单进度条 -->
+    <div class="progress-container" id="drarwoProgressContainer">
+      <div class="progress-header">
+        <h4>业务维修状态</h4>
+        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">维修进度</p>
+      </div>
+      <!-- <div class="progress-nodes" id="progressNodes">
+        <div class="progress-node" data-node="background">
+          <div class="node-circle"></div>
+          <div class="node-label">项目背景</div>
+        </div>
+        <div class="progress-node" data-node="market">
+          <div class="node-circle"></div>
+          <div class="node-label">市场发展</div>
+        </div>
+        <div class="progress-node" data-node="industry">
+          <div class="node-circle"></div>
+          <div class="node-label">行业现状</div>
+        </div>
+        <div class="progress-node" data-node="development">
+          <div class="node-circle"></div>
+          <div class="node-label">研发历程</div>
+        </div>
+        <div class="progress-node" data-node="proposal">
+          <div class="node-circle"></div>
+          <div class="node-label">方案提出</div>
+        </div>
+        <div class="progress-node" data-node="technology">
+          <div class="node-circle"></div>
+          <div class="node-label">核心技术</div>
+        </div>
+        <div class="progress-node" data-node="innovation">
+          <div class="node-circle"></div>
+          <div class="node-label">创新点</div>
+        </div>
+        <div class="progress-node" data-node="summary">
+          <div class="node-circle"></div>
+          <div class="node-label">项目总结</div>
+        </div>
+      </div> -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="drarwoProgressFill"></div>
+        <div class="progress-text" id="drarwoProgressText">0%</div>
+      </div>
+      <div class="progress-details" id="drarwoProgressDetails">
+        <span style="display: none;">总格数: <span id="totalGrids">0</span> | 当前节点: <span id="currentNode">项目背景</span></span>
+      </div>
+    </div>
+
+    <h2>飞控板维修工单 <span id="refresh-countdown-fcbmwo" class="refresh-countdown">下次刷新: 5秒</span></h2>
+    
+    <table id="flightControlTable">
+      <thead>
+        <tr>
+          <th rowspan="2">项目</th>
+          <th colspan="3">1号工程师</th>
+          <th colspan="3">2号工程师</th>
+          <th colspan="3">3号工程师</th>
+        </tr>
+        <tr>
+          <th>故障1</th>
+          <th>故障2</th>
+          <th>故障3</th>
+          <th>故障1</th>
+          <th>故障2</th>
+          <th>故障3</th>
+          <th>故障1</th>
+          <th>故障2</th>
+          <th>故障3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>发现故障</td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="fault1" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="fault2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="fault3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="fault1" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="fault2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="fault3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="fault1" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="fault2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="fault3" tabindex="0" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>检测结果</td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="testResult" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="testResult2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="testResult3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="testResult" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="testResult2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="testResult3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="testResult" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="testResult2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="testResult3" tabindex="0" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>定位故障元件</td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="locate" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="locate2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="locate3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="locate" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="locate2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="locate3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="locate" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="locate2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="locate3" tabindex="0" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>维修结果</td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="repair" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="repair2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="repair3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="repair" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="repair2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="repair3" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="repair" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="repair2" tabindex="0" contenteditable="true"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="repair3" tabindex="0" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>调优效果</td>
+          <td class="engineer-cell" data-engineer="engineer1" data-field="optimize" tabindex="0" contenteditable="true" colspan="3"></td>
+          <td class="engineer-cell" data-engineer="engineer2" data-field="optimize" tabindex="0" contenteditable="true" colspan="3"></td>
+          <td class="engineer-cell" data-engineer="engineer3" data-field="optimize" tabindex="0" contenteditable="true" colspan="3"></td>
+        </tr>
+
+
+        <tr>
+          <td>7S管理评价</td>
+          <td colspan="3">
+            <div class="btn-7s-container">
+              <button class="btn-7s-view" data-engineer="engineer1">查看</button>
+              <button class="btn-7s-edit" data-engineer="engineer1">编辑</button>
+            </div>
+          </td>
+          <td colspan="3">
+            <div class="btn-7s-container">
+              <button class="btn-7s-view" data-engineer="engineer2">查看</button>
+              <button class="btn-7s-edit" data-engineer="engineer2">编辑</button>
+            </div>
+          </td>
+          <td colspan="3">
+            <div class="btn-7s-container">
+              <button class="btn-7s-view" data-engineer="engineer3">查看</button>
+              <button class="btn-7s-edit" data-engineer="engineer3">编辑</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+    <h2>数据恢复维修工单</h2>
+    <table id="dataRecoveryTable">
+      <thead>
+        <tr>
+          <th>维修人员</th>
+          <th><span class="editable-header" data-type="drarwo_engineer" data-key="drarwo_engineer1" contenteditable="true">工程师1</span></th>
+          <th><span class="editable-header" data-type="drarwo_engineer" data-key="drarwo_engineer2" contenteditable="true">工程师2</span></th>
+          <th><span class="editable-header" data-type="drarwo_engineer" data-key="drarwo_engineer3" contenteditable="true">工程师3</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>发现故障</td>
+          <td class="data-recovery-cell" data-project="fault" data-engineer="engineer1" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="fault" data-engineer="engineer2" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="fault" data-engineer="engineer3" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>故障原因</td>
+          <td class="data-recovery-cell" data-project="cause" data-engineer="engineer1" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="cause" data-engineer="engineer2" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="cause" data-engineer="engineer3" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>修复方法</td>
+          <td class="data-recovery-cell" data-project="method" data-engineer="engineer1" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="method" data-engineer="engineer2" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="method" data-engineer="engineer3" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>维修结果</td>
+          <td class="data-recovery-cell" data-project="result" data-engineer="engineer1" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="result" data-engineer="engineer2" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="result" data-engineer="engineer3" contenteditable="true"></td>
+        </tr>
+        <tr>
+          <td>客户满意度</td>
+          <td class="data-recovery-cell" data-project="satisfaction" data-engineer="engineer1" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="satisfaction" data-engineer="engineer2" contenteditable="true"></td>
+          <td class="data-recovery-cell" data-project="satisfaction" data-engineer="engineer3" contenteditable="true"></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+
+  <div id="modal7s" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal7sTitle">7S管理评价</h3>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="row-7s">
+          <div class="item-7s">
+            <label>整理</label>
+            <div class="checkbox" data-field="7s_zhengli"></div>
+          </div>
+          <div class="item-7s">
+            <label>整顿</label>
+            <div class="checkbox" data-field="7s_zhengdun"></div>
+          </div>
+          <div class="item-7s">
+            <label>清扫</label>
+            <div class="checkbox" data-field="7s_qingsao"></div>
+          </div>
+          <div class="item-7s">
+            <label>清洁</label>
+            <div class="checkbox" data-field="7s_qingjie"></div>
+          </div>
+        </div>
+        <div class="row-7s">
+          <div class="item-7s">
+            <label>素养</label>
+            <div class="checkbox" data-field="7s_suyang"></div>
+          </div>
+          <div class="item-7s">
+            <label>安全</label>
+            <div class="checkbox" data-field="7s_anquan"></div>
+          </div>
+          <div class="item-7s">
+            <label>节约</label>
+            <div class="checkbox" data-field="7s_jieyue"></div>
+          </div>
+          <div class="item-7s">
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save7sBtn" class="btn-primary">保存</button>
+        <button id="cancel7sBtn" class="btn-secondary">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      console.log('检查登录状态...');
+      const isLoggedIn = LoginManager.isLoggedIn();
+      const currentUser = LoginManager.getCurrentUser();
+      
+      console.log('登录状态:', isLoggedIn);
+      console.log('当前用户:', currentUser);
+      
+      if (!isLoggedIn || !currentUser) {
+        console.log('用户未登录，跳转到登录页面');
+  
+        if (!window.location.pathname.includes('login.html')) {
+          window.location.href = 'login.html';
+        }
+     
+
+     
+
+      
+
+      
+
+      
+
+      
+
+     
+
+     
+
+        return;
+      }
+      
+
+      initUserInfo();
+      
+
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+          console.log('退出登录按钮被点击');
+          console.log('用户确认退出登录');
+          logout();
+        });
+      } else {
+        console.error('找不到退出登录按钮');
+      }
+    });
+    
+
+    function initUserInfo() {
+      const user = LoginManager.getCurrentUser();
+      if (user) {
+        document.getElementById('userDisplayName').textContent = user.realName || user.username;
+        document.getElementById('userRole').textContent = getRoleDisplayName(user.role);
+        
+        // 显示/隐藏管理员控制按钮
+        const adminControls = document.getElementById('adminControls');
+        if (adminControls) {
+          if (user.role === 'admin') {
+            adminControls.style.display = 'flex';
+          } else {
+            adminControls.style.display = 'none';
+          }
+        }
+
+        const roleSelect = document.getElementById('roleSelect');
+        if (roleSelect) {
+          roleSelect.value = user.role;
+
+          roleSelect.dispatchEvent(new Event('change'));
+        }
+      }
+    }
+    
+
+    function getRoleDisplayName(role) {
+      const roleNames = {
+        'engineer1': '1号工程师',
+        'engineer2': '2号工程师', 
+        'engineer3': '3号工程师',
+        'data_recovery_engineer': '数据恢复工程师',
+        'referee': '裁判',
+        'admin': '管理员'
+      };
+      return roleNames[role] || role;
+    }
+    
+    /**
+     * 退出登录功能
+     */
+    function logout() {
+      console.log('开始执行退出登录...');
+      try {
+
+        localStorage.removeItem('userSession');
+        localStorage.removeItem('isLoggedIn');
+        console.log('已清除本地存储的用户会话信息');
+        
+
+        console.log('准备跳转到登录页面...');
+        window.location.href = 'login.html';
+      } catch (error) {
+        console.error('退出登录时发生错误:', error);
+        alert('退出登录失败，请重试');
+      }
+    }
+    
+
+    function getCurrentUser() {
+      return LoginManager.getCurrentUser();
+    }
+    
+
+    function isLoggedIn() {
+      return LoginManager.isLoggedIn();
+    }
+    
+
+    function checkAuthStatus() {
+      const user = LoginManager.getCurrentUser();
+      if (!user || !user.id) {
+
+        window.location.href = 'login.html';
+        return false;
+      }
+      
+
+      document.getElementById('userDisplayName').textContent = user.real_name || user.username;
+      document.getElementById('userRole').textContent = getRoleDisplayName(user.role);
+      
+      return true;
+    }
+    
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!checkAuthStatus()) {
+        return;
+      }
+    });
+    
+
+    
+
+     document.getElementById('logoutBtn').addEventListener('click', function() {
+       localStorage.removeItem('user');
+       window.location.href = 'login.html';
+     });
+  </script>
+  <script src="js/global-refresh-manager.js"></script>
+  <script src="js/local-storage-manager.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/fcbmwo.js"></script>
+  <script src="js/drarwo.js"></script>
+  <script src="js/data-manager.js"></script>
+</body>
+</html>

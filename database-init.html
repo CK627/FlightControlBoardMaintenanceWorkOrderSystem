@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库初始化 - 飞控板维修工单系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .init-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .init-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .init-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .init-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .init-button {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .init-button:hover {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .init-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status-container {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .status-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress-log {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        
+        .log-success {
+            color: #28a745;
+        }
+        
+        .log-error {
+            color: #dc3545;
+        }
+        
+        .log-info {
+            color: #17a2b8;
+        }
+        
+        .log-warning {
+            color: #ffc107;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="init-container">
+        <div class="init-header">
+            <h1>🔧 数据库初始化工具</h1>
+            <p>检查并重置飞控板维修工单系统数据库</p>
+        </div>
+        
+        <div class="init-content">
+            <button id="initButton" class="init-button">
+                🚀 开始数据库初始化
+            </button>
+            
+            <div id="statusContainer" class="status-container">
+                <div id="statusMessage"></div>
+                <div id="progressLog" class="progress-log" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-link">← 返回主页</a>
+    </div>
+
+    <script>
+        class DatabaseInitializer {
+            constructor() {
+                this.initButton = document.getElementById('initButton');
+                this.statusContainer = document.getElementById('statusContainer');
+                this.statusMessage = document.getElementById('statusMessage');
+                this.progressLog = document.getElementById('progressLog');
+                
+                this.initButton.addEventListener('click', () => this.initializeDatabase());
+            }
+            
+            showStatus(type, message, showLog = false) {
+                this.statusContainer.className = `status-container status-${type}`;
+                this.statusContainer.style.display = 'block';
+                this.statusMessage.innerHTML = message;
+                
+                if (showLog) {
+                    this.progressLog.style.display = 'block';
+                } else {
+                    this.progressLog.style.display = 'none';
+                }
+            }
+            
+            addLogEntry(type, message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                this.progressLog.appendChild(logEntry);
+                this.progressLog.scrollTop = this.progressLog.scrollHeight;
+            }
+            
+            async initializeDatabase() {
+                this.initButton.disabled = true;
+                this.initButton.innerHTML = '<span class="loading-spinner"></span>正在初始化...';
+                
+                this.showStatus('info', '🔄 正在检查数据库完整性...', true);
+                this.progressLog.innerHTML = '';
+                this.addLogEntry('info', '开始数据库初始化流程');
+                
+                try {
+                    const response = await fetch('api/database-init.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'initialize'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        this.showStatus('success', '✅ 数据库初始化成功！', true);
+                        this.addLogEntry('success', '数据库初始化完成');
+                        
+                        // 显示详细结果
+                        if (result.log && result.log.length > 0) {
+                            result.log.forEach(logEntry => {
+                                this.addLogEntry('info', logEntry);
+                            });
+                        }
+                        
+                        if (result.message) {
+                            this.addLogEntry('success', result.message);
+                        }
+                        
+                        // 初始化成功后，显示跳转提示并自动跳转到登录页面
+                        this.addLogEntry('success', '正在跳转到登录页面...');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 3000);
+                    } else {
+                        this.showStatus('error', '❌ 数据库初始化失败', true);
+                        this.addLogEntry('error', `失败原因: ${result.message || '未知错误'}`);
+                        
+                        if (result.details && result.details.length > 0) {
+                            result.details.forEach(detail => {
+                                this.addLogEntry('error', detail);
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('数据库初始化错误:', error);
+                    this.showStatus('error', '❌ 网络错误或服务器异常', true);
+                    this.addLogEntry('error', `错误详情: ${error.message}`);
+                }
+                
+                this.initButton.disabled = false;
+                this.initButton.innerHTML = '🚀 开始数据库初始化';
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new DatabaseInitializer();
+        });
+    </script>
+</body>
+</html>

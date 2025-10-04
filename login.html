@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户登录 - 维修工单管理系统</title>
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="logo-container">
+        <img src="images/logo.jpg" alt="Logo" class="login-logo">
+      </div>
+      <h1 class="login-title">2025年世界职业院校技能大赛<br>新一代信息技术争夺赛</h1>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        
+        <button type="submit" class="login-btn" id="loginBtn">
+          登录
+        </button>
+        
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+      </form>
+      
+
+    </div>
+  </div>
+  
+  <script src="js/login.js"></script>
+</body>
+</html>
