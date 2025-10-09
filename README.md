@@ -165,5 +165,5 @@ For detailed Chinese documentation, see [使用说明.md](./使用说明.md)
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.2.0  
 **Last Updated**: October 2025
